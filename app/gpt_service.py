@@ -1,6 +1,6 @@
 from openai import OpenAI
 from app.models import *
-from app.database import get_db_cursor
+from app.db_conn import get_db_cursor
 
 client = OpenAI(api_key="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")
 
