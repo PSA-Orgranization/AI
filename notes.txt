@@ -1,0 +1,3 @@
+to create the database
+run this
+- sqlite3 psa.sqlite -init schema.sql
