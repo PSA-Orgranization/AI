@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify 
-from App.gpt_service import generate_response_with_rag_context_ROADMAP, generate_response_with_rag_context_General 
+from app.gpt_service import generate_response_with_rag_context_ROADMAP, generate_response_with_rag_context_General
 
 app = Flask(__name__)
 

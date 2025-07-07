@@ -3,12 +3,15 @@ from pypdf import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
-from transformers import pipeline
 from openai import OpenAI
-from App.models import *
-from App.models import get_db_cursor
+from .models import *
+from .models import get_db_cursor
+from pathlib import Path
 
 client = OpenAI(api_key="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")
+
+BASE_DIR = Path(__file__).parent.parent
+
 
 def openai_chat_completion(prompt: str, model="gpt-4.1"):
   response = client.chat.completions.create(
@@ -23,6 +26,7 @@ def openai_chat_completion(prompt: str, model="gpt-4.1"):
   return response.choices[0].message.content.strip()
 
 def load_multiple_pdfs(folder_path: str):
+    print(folder_path)
     splitter = RecursiveCharacterTextSplitter(
         separators=["\n\n", "\n", ". ", " ", ""], chunk_size=2000, chunk_overlap=20
     )
@@ -141,10 +145,9 @@ def retrieve_documents_with_metadata(collection, queries, n_results=5):
 
 def generate_response_with_rag_context_ROADMAP(user_input, session_id=None, username="default_user", email="default@example.com"):
     cursor = get_db_cursor()
-    
-    chunks_roadmap, metadata_roadmap = load_multiple_pdfs("D:/PSA/RAG_System/docs")
+    chunks_roadmap, metadata_roadmap = load_multiple_pdfs(str(BASE_DIR / "docs"))
     collection_roadmap = create_vector_db_with_metadata(chunks_roadmap, metadata_roadmap)
-    
+
     try:
         # Step 1: Manage user and session
         user_id = fetch_or_insert_user(cursor, username, email)
@@ -169,7 +172,7 @@ def generate_response_with_rag_context_ROADMAP(user_input, session_id=None, user
         # Step 3: Scope check
         if not is_query_in_scope(user_input, flat_history):
             return "Sorry, I am a Competitive Programming Assistant. This question falls outside my scope. Please ask about coding or competitive programming topics only."
-        
+
         # Step 4: Augment query and retrieve documents
         augmented = augment_query(user_input)
         queries = [user_input] + augmented
@@ -231,10 +234,10 @@ Keep explanations beginner-friendly but concise. Use standard C++ STL and best p
 
 def generate_response_with_rag_context_General(user_input, session_id=None, username="default_user", email="default@example.com"):
     cursor = get_db_cursor()
-    
-    chunks_general, metadata_general = load_multiple_pdfs("D:/PSA/RAG_System/docs2")
+
+    chunks_general, metadata_general = load_multiple_pdfs(str(BASE_DIR / "docs2"))
     collection_general = create_vector_db_with_metadata(chunks_general, metadata_general)
-    
+
     try:
         # Step 1: Manage user and session
         user_id = fetch_or_insert_user(cursor, username, email)
@@ -259,7 +262,7 @@ def generate_response_with_rag_context_General(user_input, session_id=None, user
         # Step 3: Scope check
         if not is_query_in_scope(user_input, flat_history):
             return "Sorry, I am a Competitive Programming Assistant. This question falls outside my scope. Please ask about coding or competitive programming topics only."
-        
+
         # Step 4: Augment query and retrieve documents
         augmented = augment_query(user_input)
         queries = [user_input] + augmented
@@ -318,7 +321,7 @@ Keep explanations beginner-friendly but concise. Use standard C++ STL and best p
     except Exception as e:
         print(f"Error in generate_response_with_rag_context: {e}")
         return f"Error occurred: {str(e)}"
-    
+
 
 
 
