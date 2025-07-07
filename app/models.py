@@ -1,4 +1,10 @@
-import sqlite3
+import sqlite3  
+
+conn = sqlite3.connect('psa.sqlite' , check_same_thread=False) 
+cursor = conn.cursor()
+
+def get_db_cursor():
+    return conn.cursor()
 
 def insert_user(cursor, username, email):
     try:
