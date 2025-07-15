@@ -183,3 +183,4 @@ flutter run
 ---
 
 **For more details, see the documentation in each subdirectory and the resources provided.**
+[Problem Solving Assistant (PSA) Final Document.pdf](https://github.com/user-attachments/files/21233914/Problem.Solving.Assistant.PSA.Final.Document.pdf)
